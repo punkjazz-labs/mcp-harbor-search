@@ -1,0 +1,15 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "app.mcpharbor/mcp-harbor-search",
+  "title": "MCP Harbor Search",
+  "description": "Search and discover MCP servers and agent tools listed in the MCP Harbor directory.",
+  "version": "1.0.0",
+  "websiteUrl": "https://mcpharbor.app",
+  "repository": {
+    "url": "https://github.com/punkjazz-labs/mcp-harbor-search",
+    "source": "github"
+  },
+  "remotes": [
+    { "type": "streamable-http", "url": "https://mcpharbor.app/mcp" }
+  ]
+}

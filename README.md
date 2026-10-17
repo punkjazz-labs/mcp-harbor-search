@@ -1,5 +1,7 @@
 # mcp-harbor-search
 
+[![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/punkjazz-labs/mcp-harbor-search)
+
 A public, remote [MCP](https://modelcontextprotocol.io) server that lets AI agents search the [MCP Harbor](https://mcpharbor.app) directory of 1,400+ MCP servers and AI-agent tools.
 
 **Endpoint:** `https://mcpharbor.app/mcp` (Streamable HTTP, no auth, read-only)

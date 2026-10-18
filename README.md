@@ -35,3 +35,6 @@ npx wrangler deploy
 
 ## License
 MIT © Punkjazz Labs
+
+## Development
+`npm ci && npm run check` runs ESLint, a strict TypeScript check of the JSDoc-typed JavaScript (`tsc`, `checkJs`), and the `node:test` suite (fixtures only, no network). GitHub Actions runs the same on every push and pull request.

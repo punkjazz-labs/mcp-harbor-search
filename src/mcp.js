@@ -14,12 +14,25 @@ const TOOLS = [
     inputSchema: { type: 'object', properties: { slug: { type: 'string' } }, required: ['slug'] },
     annotations: { readOnlyHint: true, openWorldHint: false } },
 ];
+/**
+ * One directory listing from agent-tools-directory/data/tools.json (only the fields this server reads are typed).
+ * @typedef {{ slug: string, name: string, description?: string, category?: string, type?: string, stars?: number,
+ *   url?: string, topics?: string[], [key: string]: unknown }} Entry
+ * @typedef {{ jsonrpc?: string, id?: string | number | null, method?: unknown, params?: Record<string, any> }} RpcMessage
+ */
+
+/** @param {Entry} t */
 const brief = t => ({ slug: t.slug, name: t.name, description: t.description, category: t.category, type: t.type,
   stars: t.stars, url: t.url, listing: `${SITE}/tools/${t.slug}/` });
 
+/**
+ * @param {Entry[]} tools
+ * @param {{ query?: string, category?: string, limit?: number | string }} args
+ */
 export function searchTools(tools, { query = '', category, limit = 10 }) {
   const terms = String(query).toLowerCase().split(/\s+/).filter(Boolean);
-  limit = Math.min(Math.max(parseInt(limit) || 10, 1), 50);
+  const n = Math.min(Math.max(parseInt(String(limit), 10) || 10, 1), 50);
+  /** @type {Array<[number, Entry]>} */
   const scored = [];
   for (const t of tools) {
     if (category && t.category !== category) continue;
@@ -36,13 +49,21 @@ export function searchTools(tools, { query = '', category, limit = 10 }) {
     scored.push([s + Math.log10((t.stars || 0) + 1), t]);
   }
   scored.sort((a, b) => b[0] - a[0]);
-  return { total: scored.length, results: scored.slice(0, limit).map(x => brief(x[1])) };
+  return { total: scored.length, results: scored.slice(0, n).map(x => brief(x[1])) };
 }
 
+/** @type {(id: string | number | null, result: unknown) => object} */
 const rpc = (id, result) => ({ jsonrpc: '2.0', id, result });
+/** @type {(id: string | number | null | undefined, code: number, message: string) => object} */
 const err = (id, code, message) => ({ jsonrpc: '2.0', id: id ?? null, error: { code, message } });
+/** @type {(obj: object, isError?: boolean) => object} */
 const text = (obj, isError = false) => ({ content: [{ type: 'text', text: JSON.stringify(obj, null, 2) }], structuredContent: obj, isError });
 
+/**
+ * @param {RpcMessage} msg
+ * @param {Entry[]} tools
+ * @returns {object | null}
+ */
 function handle(msg, tools) {
   if (!msg || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg?.id, -32600, 'Invalid Request');
   const { id, method, params = {} } = msg;
@@ -75,6 +96,10 @@ const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods
   'Access-Control-Allow-Headers': 'Content-Type, Accept, Mcp-Session-Id, Mcp-Protocol-Version, Authorization',
   'Access-Control-Expose-Headers': 'Mcp-Session-Id' };
 
+/**
+ * @param {Request} request
+ * @param {Entry[]} tools
+ */
 export async function handleMcp(request, tools) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (request.method !== 'POST') return new Response(JSON.stringify(err(null, -32000, 'Use POST (Streamable HTTP). SSE streams are not offered.')),

@@ -1,0 +1,20 @@
+{
+  "name": "mcp-harbor-search",
+  "private": true,
+  "type": "module",
+  "description": "Remote MCP server for searching the MCP Harbor directory",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^20.19.43",
+    "eslint": "^9.39.5",
+    "globals": "^17.13.0",
+    "typescript": "^5.9.3"
+  }
+}

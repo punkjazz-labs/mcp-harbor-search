@@ -28,13 +28,13 @@ curl -s https://mcpharbor.app/mcp -H 'Content-Type: application/json' -H 'Accept
 ```
 
 ## Self-host
-No dependencies and no build step. `src/mcp.js` is the protocol and search logic. `src/worker.js` is a Cloudflare Worker that loads the public dataset from the `punkjazz-labs/agent-tools-directory` repo.
+No dependencies and no build step. `src/mcp.js` is the protocol and search logic. `src/worker.js` is a Cloudflare Worker entry point that loads the directory dataset from `DATA_URL`.
 ```sh
 npx wrangler deploy
 ```
 
 ## License
-MIT © Punkjazz Labs
+MIT, see [LICENSE](./LICENSE).
 
 ## Development
 `npm ci && npm run check` runs ESLint, a strict TypeScript check of the JSDoc-typed JavaScript (`tsc`, `checkJs`), and the `node:test` suite (fixtures only, no network). GitHub Actions runs the same on every push and pull request.
